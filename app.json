@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "GifStickers",
+    "slug": "GifStickersApp-React-native",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/splashBeta.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splashBeta.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#00BF63"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/splashBeta.png",
+        "backgroundColor": "#00BF63"
+      }
+    },
+    "web": {
+      "favicon": "./assets/splashBeta.png"
+    }
+  }
+}
