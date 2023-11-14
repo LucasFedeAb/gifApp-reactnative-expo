@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
-export const useShareGif = () => {
+const useShareGif = () => {
   const [isSharing, setIsSharing] = useState(false);
 
   const shareGif = useCallback(async (gif, message = "Compartir GIF") => {
@@ -33,3 +33,5 @@ export const useShareGif = () => {
 
   return { isSharing, shareGif };
 };
+
+export default useShareGif;

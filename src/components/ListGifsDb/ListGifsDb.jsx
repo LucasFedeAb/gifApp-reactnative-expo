@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./ListGifsDb.style";
-import Gif from "../Gif/Gif";
+import { Gif } from "../index";
 
 const ListGifsDb = ({ data }) => {
   const currentTheme = useSelector((state) => state.theme.currentTheme);
+
   const navigation = useNavigation();
 
   const handleAllGifsByTitle = (title) => {
@@ -15,6 +16,19 @@ const ListGifsDb = ({ data }) => {
       title,
     });
   };
+
+  /*  useEffect(() => {
+    showToastMessage();
+  }, [lastAction]);
+
+  const showToastMessage = () => {
+    setShowToast(true);
+  };
+
+  const hideToast = () => {
+    setShowToast(false);
+  }; */
+
   return (
     <View style={styles.gifsPrincipalContainer}>
       {data?.map((item) => (

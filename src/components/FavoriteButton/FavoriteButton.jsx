@@ -31,7 +31,7 @@ const FavoriteButton = ({ isFavorite, onPress, styleCustom }) => {
     >
       <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
         <Ionicons
-          name="heart"
+          name={isFavorite ? "heart" : "add-circle-outline"}
           size={25}
           color={isFavorite ? "darkorange" : "lightgray"}
         />

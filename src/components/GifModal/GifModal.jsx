@@ -18,6 +18,7 @@ const GifModal = ({
       animationType="fade"
       transparent={true}
       onRequestClose={handleCloseModal}
+      style={styles.modal}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>

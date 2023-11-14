@@ -10,6 +10,7 @@ import ListGifsTrendings from "./ListGifsTrendings/ListGifsTrendings";
 import Loader from "./Loader/Loader";
 import SearchInput from "./SearchInput/SearchInput";
 import Splash from "./Splash/Splash";
+import Toast from "./Toast/Toast";
 
 export {
   AnimatedImageCategory,
@@ -24,4 +25,5 @@ export {
   Loader,
   SearchInput,
   Splash,
+  Toast,
 };

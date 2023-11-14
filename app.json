@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#00BF63"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -19,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/splashBeta.png",
         "backgroundColor": "#00BF63"
-      }
+      },
+      "package": "lucasabrigo.GifStickers"
     },
     "web": {
       "favicon": "./assets/splashBeta.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f39352bc-1a42-4429-85d7-824fdeff9de2"
+      }
     }
   }
 }

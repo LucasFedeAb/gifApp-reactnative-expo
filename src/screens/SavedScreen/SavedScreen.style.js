@@ -47,4 +47,12 @@ export default styles = StyleSheet.create({
     gap: 50,
     justifyContent: "space-around",
   },
+  toastContainer: {
+    flex: 1,
+    position: "absolute",
+    bottom: 100,
+    left: 0,
+    right: 50,
+    alignItems: "center",
+  },
 });

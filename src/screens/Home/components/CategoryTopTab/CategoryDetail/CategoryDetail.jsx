@@ -6,15 +6,20 @@ import {
   useGetCategoriesQuery,
   useGetGifsQuery,
 } from "../../../../../services/gifsApi";
+import { useToast } from "../../../../../hooks";
 import {
   AnimatedImageCategory,
   ListGifsDb,
   ListGifsTrendings,
   Loader,
+  Toast,
 } from "@components";
 
 const CategoryDetail = ({ category }) => {
   const currentTheme = useSelector((state) => state.theme.currentTheme);
+  const lastAction = useSelector((state) => state.favorites.lastAction);
+
+  const { showToast, hideToast } = useToast();
   const { data: dataGifs, isLoading, isError } = useGetGifsQuery();
   const { data: dataCategories } = useGetCategoriesQuery();
 
@@ -42,7 +47,9 @@ const CategoryDetail = ({ category }) => {
       {isLoading && <Loader />}
 
       {category === "Tendencias" || category === "Emojis" ? (
-        <ListGifsTrendings data={dataFilterByCategory} category={category} />
+        <>
+          <ListGifsTrendings data={dataFilterByCategory} category={category} />
+        </>
       ) : (
         <>
           <AnimatedImageCategory
@@ -60,6 +67,22 @@ const CategoryDetail = ({ category }) => {
             <ListGifsDb data={dataFilterByCategory} />
           </ScrollView>
         </>
+      )}
+      {showToast && lastAction === "addFav" && (
+        <Toast
+          message={"Se agregó gif a Favoritos"}
+          visible={showToast}
+          hideToast={hideToast}
+          icon={"checkmark"}
+        />
+      )}
+      {showToast && lastAction === "removeFav" && (
+        <Toast
+          message={"Se eliminó gif de Favoritos"}
+          visible={showToast}
+          hideToast={hideToast}
+          lastAction={lastAction}
+        />
       )}
     </View>
   );

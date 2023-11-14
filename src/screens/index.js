@@ -7,6 +7,7 @@ import SignUpScreen from "./Profile/SignUpScreen/SignUpScreen.jsx";
 import ProfileScreen from "./Profile/ProfileScreen/ProfileScreen.jsx";
 import SavedScreen from "./SavedScreen/SavedScreen.jsx";
 
+
 export {
   Home,
   CategoryTopTab,

@@ -19,6 +19,7 @@ const Header = ({ title, onPress }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
+  const favorites = useSelector((state) => state.favorites.favoritesGifs);
   const sidebarAnimation = useRef(new Animated.Value(0)).current;
 
   const toggleSidebar = () => {
@@ -81,7 +82,7 @@ const Header = ({ title, onPress }) => {
                   <Ionicons name="notifications" size={25} color="#FFF" />
                 </TouchableOpacity>
               </>
-            ) : title === "Mis Favoritos" ? (
+            ) : title === "Favoritos" ? (
               <>
                 <View
                   style={{
@@ -98,12 +99,20 @@ const Header = ({ title, onPress }) => {
                     <Ionicons name="chevron-back" size={30} color="#FFF" />
                   </TouchableOpacity>
                   <Text style={styles.titleDetail}>{title}</Text>
-                  <TouchableOpacity
-                    style={[styles.endIcon, { marginLeft: 8 }]}
-                    onPress={onPress}
-                  >
-                    <Ionicons name="ellipsis-vertical" size={20} color="#FFF" />
-                  </TouchableOpacity>
+                  {favorites.length === 0 ? (
+                    <View />
+                  ) : (
+                    <TouchableOpacity
+                      style={[styles.endIcon, { marginLeft: 8 }]}
+                      onPress={onPress}
+                    >
+                      <Ionicons
+                        name="ellipsis-vertical"
+                        size={20}
+                        color="#fff"
+                      />
+                    </TouchableOpacity>
+                  )}
                 </View>
               </>
             ) : (

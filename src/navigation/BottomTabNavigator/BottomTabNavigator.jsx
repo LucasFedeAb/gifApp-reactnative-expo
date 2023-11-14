@@ -45,7 +45,7 @@ function BottomTabNavigator() {
             labelText = "Inicio";
           } else if (route.name === "Saves") {
             iconName = focused ? "bookmarks" : "bookmark-outline";
-            labelText = "Guardados";
+            labelText = "Favoritos";
           } else if (route.name === "Create") {
             return <CustomCreateIcon focused={focused} />;
           } else if (route.name === "Search") {

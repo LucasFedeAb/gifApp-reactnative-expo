@@ -26,7 +26,7 @@ GifStickers es una aplicación construida en React Native Expo que te permite ex
 
 ### Pantalla Principal
 
-![Pantalla Principal](/screenshots/home_screen.gif)
+![Pantalla Principal](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdm44bmx5NDU1bm5ybWNjazIyaDNzbm5yc2o4MWN3eWFveXdqdHZwciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3vqiIuTqcYWy6AdsXr/giphy.gif)
 
 ![Pantalla de Búsqueda](/screenshots/search_screen.gif)
 

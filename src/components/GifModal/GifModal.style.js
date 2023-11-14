@@ -7,6 +7,10 @@ export default styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
+  modal: {
+    flex: 1,
+    zIndex: 10,
+  },
   modalView: {
     width: "90%",
     height: "70%",
@@ -21,6 +25,7 @@ export default styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    zIndex: 10,
   },
   favIcon: {
     position: "absolute",

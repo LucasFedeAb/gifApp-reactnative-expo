@@ -12,7 +12,7 @@ import {
   removeFavoriteGifFromDb,
   getFavoriteGifsFromDb,
 } from "../../db";
-import { useShareGif } from "../../hooks/useShareGif/useShareGif";
+import { useShareGif } from "../../hooks";
 import { FavoriteButton, GifModal } from "@components";
 
 const Gif = ({
@@ -27,6 +27,7 @@ const Gif = ({
   const dispatch = useDispatch();
   const localId = useSelector((state) => state.auth.localId);
   const favorites = useSelector((state) => state.favorites.favoritesGifs);
+
   const { shareGif } = useShareGif();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -91,6 +92,7 @@ const Gif = ({
               (favorite) => favorite.id === id && favorite.url === url
             )
           );
+          return;
         })
         .catch((error) => {
           console.log("Error al obtener los GIFs favoritos:", error);
@@ -128,7 +130,7 @@ const Gif = ({
 
         {isSaved ? (
           <TouchableOpacity style={styles.favIcon} onPress={handleRemoveGif}>
-            <Ionicons name="trash" size={25} color="red" />
+            <Ionicons name="close-circle" size={20} color="red" />
           </TouchableOpacity>
         ) : (
           <>

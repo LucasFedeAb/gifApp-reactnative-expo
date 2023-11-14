@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import styles from "./AllGifsTitle.style";
-import Header from "@components/Header/Header";
-import Gif from "../../../../components/Gif/Gif";
 import { useSelector } from "react-redux";
+import { useToast } from "../../../../hooks";
+import { Gif, Header, Toast } from "@components";
 
 const AllGifsTitle = ({ route }) => {
   const { gifs, title } = route.params || { gifs: [] };
   const currentTheme = useSelector((state) => state.theme.currentTheme);
+  const lastAction = useSelector((state) => state.favorites.lastAction);
   const [uniqueGifs, setUniqueGifs] = useState([]);
+
+  const { showToast, hideToast } = useToast();
 
   useEffect(() => {
     const filteredGifsByTitle = gifs.filter((item) => item.title === title);
@@ -53,6 +56,22 @@ const AllGifsTitle = ({ route }) => {
           keyExtractor={(gif, index) => gif}
         />
       </View>
+      {showToast && lastAction === "addFav" && (
+        <Toast
+          message={"Se agregó gif a Favoritos"}
+          visible={showToast}
+          hideToast={hideToast}
+          icon={"checkmark"}
+        />
+      )}
+      {showToast && lastAction === "removeFav" && (
+        <Toast
+          message={"Se eliminó gif de Favoritos"}
+          visible={showToast}
+          hideToast={hideToast}
+          lastAction={lastAction}
+        />
+      )}
     </>
   );
 };

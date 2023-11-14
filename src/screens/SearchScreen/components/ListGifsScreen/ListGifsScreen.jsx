@@ -6,7 +6,8 @@ import styles from "./ListGifsScreen.style";
 import { useGetGiphyBySearchQuery } from "../../../../services/giphyApi";
 import { useSelector, useDispatch } from "react-redux";
 import { setDataGiphy } from "../../../../features/gifsSlice/gifsSlice";
-import { Header, ListGifs } from "@components";
+import { useToast } from "../../../../hooks";
+import { Header, ListGifs, Toast } from "@components";
 
 const ListGifsScreen = ({ route }) => {
   const dispatch = useDispatch();
@@ -14,6 +15,9 @@ const ListGifsScreen = ({ route }) => {
   const searchTerm = useSelector((state) => state.gifs.categorySelected);
   const giphyGifsData = useSelector((state) => state.gifs.dataGiphy);
   const favorites = useSelector((state) => state.favorites.favoritesGifs);
+  const lastAction = useSelector((state) => state.favorites.lastAction);
+
+  const { showToast, hideToast } = useToast();
   const [isInitialSearch, setIsInitialSearch] = useState(true);
   const [giphyData, setGiphyData] = useState([]);
   const { data, isLoading } = useGetGiphyBySearchQuery({
@@ -85,7 +89,23 @@ const ListGifsScreen = ({ route }) => {
         )}
 
         {!isLoading && giphyData.length > 0 && <ListGifs data={giphyData} />}
+        {showToast && lastAction === "addFav" && (
+          <Toast
+            message={"Se agregó gif a Favoritos"}
+            visible={showToast}
+            hideToast={hideToast}
+            icon={"checkmark"}
+          />
+        )}
       </SafeAreaView>
+      {showToast && lastAction === "removeFav" && (
+        <Toast
+          message={"Se eliminó gif de Favoritos"}
+          visible={showToast}
+          hideToast={hideToast}
+          lastAction={lastAction}
+        />
+      )}
     </>
   );
 };
