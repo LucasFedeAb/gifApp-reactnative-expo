@@ -7,7 +7,8 @@ import { useGetGiphyBySearchQuery } from "../../../../services/giphyApi";
 import { useSelector, useDispatch } from "react-redux";
 import { setDataGiphy } from "../../../../features/gifsSlice/gifsSlice";
 import { useToast } from "../../../../hooks";
-import { Header, ListGifs, Toast } from "@components";
+import { Header, ListGifs, Loader, Toast } from "@components";
+import { colorGreen } from "../../../../constants/colors";
 
 const ListGifsScreen = ({ route }) => {
   const dispatch = useDispatch();
@@ -58,14 +59,14 @@ const ListGifsScreen = ({ route }) => {
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <ActivityIndicator size={80} color="#ccc" />
+            <Loader />
           </View>
         )}
         {isInitialSearch && !isLoading && (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <ActivityIndicator size={80} color="#ccc" />
+            <Loader />
           </View>
         )}
 
@@ -95,6 +96,8 @@ const ListGifsScreen = ({ route }) => {
             visible={showToast}
             hideToast={hideToast}
             icon={"checkmark"}
+            colorText={{ color: colorGreen.quinquenary }}
+            iconColor={colorGreen.quinquenary}
           />
         )}
       </SafeAreaView>

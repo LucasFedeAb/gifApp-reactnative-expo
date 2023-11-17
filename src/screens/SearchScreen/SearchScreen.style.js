@@ -22,7 +22,7 @@ export default styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 8,
     color: "#fff",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
   },
   containerCategories: {

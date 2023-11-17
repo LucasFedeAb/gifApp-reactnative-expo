@@ -11,16 +11,19 @@ import {
 } from "../../features/gifsSlice/gifsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { useGetTrendingTermsQuery } from "../../services/giphyApi";
+import { Loader } from "@components";
 
 const SearchScreen = () => {
+  const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.theme.currentTheme);
   const trendingSearchTerms = useSelector(
     (state) => state.gifs.trendingSearchTerms
   );
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
   const { data: dataTrendingTerms, isLoading } = useGetTrendingTermsQuery();
-  const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const [backgroundColors, setBakgroundColors] = useState([]);
 
   const titleOpacity = useRef(new Animated.Value(1)).current;
   const searchInputTranslateY = useRef(new Animated.Value(0)).current;
@@ -50,16 +53,18 @@ const SearchScreen = () => {
     }
   }, [dataTrendingTerms]);
 
-  const backgroundColors = [
-    "#016450",
-    "#7358ff",
-    "#1e3264",
-    "#e8125c",
-    "#e1118b",
-    "#158a08",
-    "#509bf6",
-    "#e9142a",
-  ];
+  useEffect(() => {
+    setBakgroundColors([
+      "#016450",
+      "#7358ff",
+      "#1e3264",
+      "#e8125c",
+      "#e1118b",
+      "#158a08",
+      "#509bf6",
+      "#e9142a",
+    ]);
+  }, []);
 
   return (
     <>
@@ -108,13 +113,13 @@ const SearchScreen = () => {
             ]}
           >
             <Text style={[styles.subTitle, { color: currentTheme.color }]}>
-              Tendencias:
+              Tendencias Giphy
             </Text>
           </Animated.View>
         </View>
 
         {isLoading ? (
-          <Text>Loading data ...</Text>
+          <Loader />
         ) : (
           <>
             <Animated.View

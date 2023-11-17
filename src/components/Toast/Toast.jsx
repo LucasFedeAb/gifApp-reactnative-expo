@@ -10,7 +10,9 @@ const Toast = ({
   hideToast,
   duration = 500,
   style = {},
+  colorText = {},
   icon = "close",
+  iconColor = "#000",
 }) => {
   const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -32,9 +34,9 @@ const Toast = ({
 
   return (
     <Animated.View style={[styles.toast, { opacity: fadeAnim }, style]}>
-      <Text style={styles.toastText}>{message}</Text>
+      <Text style={([styles.toastText], colorText)}>{message}</Text>
       <TouchableOpacity style={styles.closeButton} onPress={() => hideToast()}>
-        <Ionicons name={icon} size={20} color="#000" />
+        <Ionicons name={icon} size={20} color={iconColor} />
       </TouchableOpacity>
     </Animated.View>
   );

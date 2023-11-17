@@ -8,19 +8,88 @@ import {
   setCameraImage,
   clearUser,
 } from "../../../features/authSlice/authSlice";
-import { usePostProfileImageMutation } from "../../../services/permissionsApi";
+import {
+  usePostProfileImageMutation,
+  useDeleteProfileImageMutation,
+} from "../../../services/permissionsApi";
 import { deleteSession } from "../../../db";
-
+import { useToast } from "../../../hooks";
 import styles from "./ProfileScreen.style";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomModal, Toast } from "@components";
+import { colorGreen } from "../../../constants/colors";
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+
   const image = useSelector((state) => state.auth.imageCamera);
   const email = useSelector((state) => state.auth.user);
   const currentTheme = useSelector((state) => state.theme.currentTheme);
   const { localId } = useSelector((state) => state.auth);
-  const [triggerSaveProfileImage, result] = usePostProfileImageMutation();
+
+  const [triggerSaveProfileImage] = usePostProfileImageMutation();
+  const [deleteImage] = useDeleteProfileImageMutation();
+  const { showToast, hideToast, showToastMessage } = useToast();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [toggleToast, setToggleToast] = useState(false);
+  const [errorImage, setErrorImage] = useState(false);
+  const [isImageLongPressed, setIsImageLongPressed] = useState(false);
+  const [isModalDelete, setIsModalDelete] = useState(false);
+  const [imageUpload, setImageUpload] = useState(false);
+  const [imageDeleteSuccess, setImageDeleteSuccess] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const modalContent = () => {
+    return (
+      <View style={styles.modalContent}>
+        <Text style={styles.titleModal}>Editar foto de perfil</Text>
+
+        <View style={styles.containerButtonsModal}>
+          <TouchableOpacity onPress={pickImage} style={styles.buttonModal}>
+            <Text style={styles.labelButtonModal}>Tomar Foto</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={openImagePickerAsync}
+            style={styles.buttonModal}
+          >
+            <Text style={styles.labelButtonModal}>
+              Seleccionar desde galeria
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+  const modalDeleteContent = () => {
+    return (
+      <View style={styles.modalContent}>
+        <Text style={styles.titleModal}>¿Eliminar foto de perfil?</Text>
+
+        <View style={styles.containerButtonsModal}>
+          <TouchableOpacity
+            onPress={handleDeleteImage}
+            style={styles.buttonModalDelete}
+          >
+            <Text style={styles.labelButtonModal}>Eliminar Foto</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={closeModalDelete}
+            style={styles.buttonModal}
+          >
+            <Text style={styles.labelButtonModal}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
   const verifyCameraPermissions = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
@@ -31,6 +100,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const pickImage = async () => {
+    closeModal();
     const isCameraOk = await verifyCameraPermissions();
 
     if (isCameraOk) {
@@ -45,36 +115,82 @@ const ProfileScreen = ({ navigation }) => {
         dispatch(
           setCameraImage(`data:image/jpeg;base64,${result.assets[0].base64}`)
         );
+        //Almacenar image en db
+        try {
+          await triggerSaveProfileImage({
+            image: `data:image/jpeg;base64,${result.assets[0].base64}`,
+            localId,
+          });
+        } catch (error) {
+          console.error("Error al guardar la imagen:", error);
+          setErrorImage(true);
+        }
+        setImageUpload(true);
+        showToastMessage();
+        setToggleToast(true);
       }
     }
   };
 
-  useEffect(() => {
-    confirmImage();
-  }, [image]);
+  let openImagePickerAsync = async () => {
+    closeModal();
+    const isCameraOk = await verifyCameraPermissions();
 
-  const confirmImage = () => {
-    triggerSaveProfileImage({ image, localId });
+    if (isCameraOk) {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [9, 16],
+        base64: true,
+        quality: 0.4,
+      });
+      if (!result.canceled) {
+        dispatch(setCameraImage(`${result.assets[0].uri}`));
+        //Almacenar image en db
+        try {
+          await triggerSaveProfileImage({
+            image: `${result.assets[0].uri}`,
+            localId,
+          });
+        } catch (error) {
+          console.error("Error al guardar la imagen:", error);
+          setErrorImage(true);
+        }
+        setImageUpload(true);
+        showToastMessage();
+        setToggleToast(true);
+      }
+    }
   };
 
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  let openImagePickerAsync = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("Permission to camara roll is required");
-      return;
+  const handleDeleteImage = async () => {
+    try {
+      const result = await deleteImage(localId);
+      if (result.data === null) {
+        dispatch(setCameraImage(result.data));
+        setImageDeleteSuccess(true);
+      }
+    } catch (error) {
+      console.error("Error al eliminar la imagen:", error);
     }
+    closeModalDelete();
+    showToastMessage();
+    setToggleToast(true);
+  };
 
-    const pickerResult = await ImagePicker.launchImageLibraryAsync();
-    // console.log(pickerResult)
+  const handleImage = () => {
+    setIsImageLongPressed(true);
+  };
 
-    if (pickerResult.cancelled === true) {
-      return;
+  const openModalDelete = () => {
+    if (isImageLongPressed) {
+      setIsModalDelete(true);
     }
+  };
 
-    setSelectedImage({ localUri: pickerResult.uri });
+  const closeModalDelete = () => {
+    setIsModalDelete(false);
+    setIsImageLongPressed(false);
   };
 
   const handleLogout = () => {
@@ -93,6 +209,17 @@ const ProfileScreen = ({ navigation }) => {
           <Ionicons name="person-circle-outline" size={30} color="#fff" />
         </View>
       </SafeAreaView>
+      <CustomModal
+        visible={modalVisible}
+        onClose={closeModal}
+        content={modalContent}
+      />
+      <CustomModal
+        visible={isModalDelete}
+        onClose={closeModalDelete}
+        content={modalDeleteContent}
+      />
+
       <View
         style={[
           styles.container,
@@ -110,16 +237,25 @@ const ProfileScreen = ({ navigation }) => {
                   { borderColor: currentTheme.backgroundColor },
                 ]}
               >
-                <Image
-                  source={{
-                    uri: image,
-                  }}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
+                <Pressable delayLongPress={300} onLongPress={handleImage}>
+                  <Image
+                    source={{
+                      uri: image,
+                    }}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+                  {isImageLongPressed && (
+                    <View style={[styles.trashIcon]}>
+                      <TouchableOpacity onPress={openModalDelete}>
+                        <Ionicons name="trash-bin" size={40} color="red" />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </Pressable>
               </View>
               <View style={styles.containerButton}>
-                <Pressable style={styles.cameraImage} onPress={pickImage}>
+                <Pressable style={styles.cameraImage} onPress={openModal}>
                   <Ionicons name="camera-reverse" size={25} color="white" />
                 </Pressable>
               </View>
@@ -141,7 +277,7 @@ const ProfileScreen = ({ navigation }) => {
                 />
               </View>
               <View style={styles.containerButton}>
-                <Pressable style={styles.cameraImage} onPress={pickImage}>
+                <Pressable style={styles.cameraImage} onPress={openModal}>
                   <Ionicons name="camera-reverse" size={25} color="white" />
                 </Pressable>
               </View>
@@ -158,6 +294,45 @@ const ProfileScreen = ({ navigation }) => {
             <Text style={styles.labelButtonLogout}>Cerrar sesión</Text>
           </TouchableOpacity>
         </View>
+      </View>
+      <View
+        style={[
+          styles.containerToast,
+          {
+            backgroundColor: currentTheme.backgroundColor,
+          },
+        ]}
+      >
+        {showToast && toggleToast && imageUpload && (
+          <Toast
+            message={
+              errorImage
+                ? "Error al guardar la imagen"
+                : "Se actualizó la imagen de perfil"
+            }
+            visible={showToast}
+            hideToast={() => {
+              hideToast();
+              setErrorImage(false);
+              setImageUpload(false);
+            }}
+            duration={2000}
+            icon={!errorImage && "checkmark"}
+            colorText={!errorImage && { color: colorGreen.quinquenary }}
+            iconColor={!errorImage && colorGreen.quinquenary}
+          />
+        )}
+        {showToast && toggleToast && imageDeleteSuccess && (
+          <Toast
+            message={"Imagen Eliminada"}
+            visible={showToast}
+            hideToast={() => {
+              hideToast();
+              setImageDeleteSuccess(false);
+            }}
+            duration={2000}
+          />
+        )}
       </View>
     </>
   );

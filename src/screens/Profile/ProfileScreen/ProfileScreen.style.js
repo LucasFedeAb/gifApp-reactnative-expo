@@ -30,7 +30,18 @@ export default styles = StyleSheet.create({
     borderRadius: 100,
     overflow: "hidden",
     borderWidth: 8,
+    position: "relative",
   },
+  trashIcon: {
+    ...StyleSheet.absoluteFillObject,
+    width: 180,
+    height: 180,
+    borderRadius: 100,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   image: {
     width: 180,
     height: 180,
@@ -54,7 +65,7 @@ export default styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colorGreen.primary,
-    backgroundColor: "darkorange",
+    backgroundColor: "#e65f07",
     marginHorizontal: "10%",
     borderRadius: 5,
   },
@@ -80,5 +91,43 @@ export default styles = StyleSheet.create({
   },
   labelButtonLogout: {
     color: "#fff",
+  },
+  modalContent: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
+  titleModal: {
+    fontSize: 16,
+    textAlign: "center",
+  },
+  buttonModal: {
+    backgroundColor: "#e65f07",
+    padding: 12,
+    textAlign: "center",
+    borderRadius: 5,
+  },
+  buttonModalDelete: {
+    backgroundColor: "darkred",
+    padding: 12,
+    textAlign: "center",
+    borderRadius: 5,
+  },
+  labelButtonModal: {
+    color: "#fff",
+    fontSize: 12,
+    textAlign: "center",
+  },
+  containerButtonsModal: {
+    flexDirection: "row",
+    margin: 25,
+    gap: 50,
+    justifyContent: "space-around",
+  },
+  containerToast: {
+    flex: 1,
+    width: "100%",
+    position: "absolute",
+    bottom: 0,
   },
 });

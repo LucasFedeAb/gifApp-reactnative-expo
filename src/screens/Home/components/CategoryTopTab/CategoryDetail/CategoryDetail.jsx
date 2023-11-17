@@ -7,6 +7,7 @@ import {
   useGetGifsQuery,
 } from "../../../../../services/gifsApi";
 import { useToast } from "../../../../../hooks";
+import { colorGreen } from "../../../../../constants/colors";
 import {
   AnimatedImageCategory,
   ListGifsDb,
@@ -74,6 +75,8 @@ const CategoryDetail = ({ category }) => {
           visible={showToast}
           hideToast={hideToast}
           icon={"checkmark"}
+          colorText={{ color: colorGreen.quinquenary }}
+          iconColor={colorGreen.quinquenary}
         />
       )}
       {showToast && lastAction === "removeFav" && (

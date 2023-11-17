@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { fontsType } from "../../constants/fontsType";
 
 export default styles = StyleSheet.create({
   container: {
@@ -28,6 +29,7 @@ export default styles = StyleSheet.create({
   },
   toastText: {
     color: "#000",
+    fontFamily: fontsType.bold,
   },
   closeButton: {
     position: "absolute",

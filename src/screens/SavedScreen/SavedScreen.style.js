@@ -55,4 +55,10 @@ export default styles = StyleSheet.create({
     right: 50,
     alignItems: "center",
   },
+  containerToast: {
+    flex: 1,
+    width: "100%",
+    position: "absolute",
+    bottom: 0,
+  },
 });

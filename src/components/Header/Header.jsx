@@ -19,7 +19,7 @@ const Header = ({ title, onPress }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
-  const favorites = useSelector((state) => state.favorites.favoritesGifs);
+  const favorites = useSelector((state) => state.favorites.favoritesGifsRef);
   const sidebarAnimation = useRef(new Animated.Value(0)).current;
 
   const toggleSidebar = () => {
@@ -158,7 +158,7 @@ const Header = ({ title, onPress }) => {
                 style={styles.sidebarContent}
               >
                 <View style={styles.sidebarHeader}>
-                  <Text style={styles.sidebarLogo}>My app</Text>
+                  <Text style={styles.sidebarLogo}>GifStickers</Text>
                   <TouchableOpacity
                     style={styles.sidebarCloseIcon}
                     onPress={closeSidebar}
@@ -199,7 +199,7 @@ const Header = ({ title, onPress }) => {
                   >
                     {isDarkMode ? (
                       <>
-                        <Ionicons name="sunny" size={24} color="yellow" />
+                        <Ionicons name="sunny" size={24} color="orange" />
                         <Text style={styles.sidebarNavLinkText}>
                           Modo Claro
                         </Text>

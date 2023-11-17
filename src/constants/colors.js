@@ -15,4 +15,6 @@ export const colorGreen = {
   secondary: "#9bc8b1",
   tertiary: "#bcdace",
   quaternary: "#dfeee7",
+  quinquenary: "#00BF63",
+  quinquenary: "darkgreen",
 };

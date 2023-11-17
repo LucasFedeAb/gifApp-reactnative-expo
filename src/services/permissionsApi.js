@@ -17,8 +17,17 @@ export const permissionsApi = createApi({
         },
       }),
     }),
+    deleteProfileImage: builder.mutation({
+      query: (localId) => ({
+        url: `profileImages/${localId}.json`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetProfileImageQuery, usePostProfileImageMutation } =
-  permissionsApi;
+export const {
+  useGetProfileImageQuery,
+  usePostProfileImageMutation,
+  useDeleteProfileImageMutation,
+} = permissionsApi;

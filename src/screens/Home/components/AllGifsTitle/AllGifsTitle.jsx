@@ -4,6 +4,7 @@ import styles from "./AllGifsTitle.style";
 import { useSelector } from "react-redux";
 import { useToast } from "../../../../hooks";
 import { Gif, Header, Toast } from "@components";
+import { colorGreen } from "../../../../constants/colors";
 
 const AllGifsTitle = ({ route }) => {
   const { gifs, title } = route.params || { gifs: [] };
@@ -62,6 +63,8 @@ const AllGifsTitle = ({ route }) => {
           visible={showToast}
           hideToast={hideToast}
           icon={"checkmark"}
+          colorText={{ color: colorGreen.quinquenary }}
+          iconColor={colorGreen.quinquenary}
         />
       )}
       {showToast && lastAction === "removeFav" && (

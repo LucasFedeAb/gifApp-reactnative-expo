@@ -2,7 +2,10 @@ import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import styles from "./SavedScreen.style";
 import { getFavoriteGifsFromDb, resetAllFavorites } from "../../db";
-import { setFavoritesGifs } from "../../features/favoritesSlice/favoritesSlice";
+import {
+  setFavoritesGifs,
+  setFavoritesGifsRef,
+} from "../../features/favoritesSlice/favoritesSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useToast } from "../../hooks";
 import { CustomModal, Header, ListGifs, Loader, Toast } from "@components";
@@ -70,6 +73,7 @@ const SavedScreen = () => {
             }));
 
             setFavoritesListData(updatedFavoritesList);
+            dispatch(setFavoritesGifsRef(updatedFavoritesList));
           } else {
             setFavoritesListData([]);
           }
@@ -89,6 +93,7 @@ const SavedScreen = () => {
       console.log(`Se eliminaron ${rowsAffected} favoritos.`);
       setFavoritesListData([]);
       dispatch(setFavoritesGifs([]));
+      dispatch(setFavoritesGifsRef([]));
     } catch (error) {
       setErrorDeleteAllFav(true);
       console.error("Error al restablecer los favoritos:", error);
@@ -130,38 +135,50 @@ const SavedScreen = () => {
           </View>
         )}
         {favoritesListData.length > 0 && <ListGifs data={favoritesListData} />}
-        {showToast && favorites.length === 0 && toggleToast && (
-          <Toast
-            message={"Se eliminaron todos los gifs de Favoritos"}
-            visible={showToast}
-            hideToast={() => {
-              hideToast();
-              setToggleToast(false);
-              setErrorDeleteAllFav(false);
-            }}
-          />
-        )}
-        {showToast &&
-          favorites.length > 0 &&
-          toggleToast &&
-          errorDeleteAllFav && (
+        <View
+          style={[
+            styles.containerToast,
+            {
+              backgroundColor: currentTheme.backgroundColor,
+            },
+          ]}
+        >
+          {showToast && favorites.length === 0 && toggleToast && (
             <Toast
-              message={"Error al eliminar los gifs favoritos"}
+              message={"Se eliminaron todos los gifs de Favoritos"}
               visible={showToast}
               hideToast={() => {
                 hideToast();
                 setToggleToast(false);
                 setErrorDeleteAllFav(false);
               }}
+              duration={1500}
             />
           )}
-        {showToast && lastAction === "removeFav" && !toggleToast && (
-          <Toast
-            message={"Se eliminó gif de Favoritos"}
-            visible={showToast}
-            hideToast={hideToast}
-          />
-        )}
+
+          {showToast &&
+            favorites.length > 0 &&
+            toggleToast &&
+            errorDeleteAllFav && (
+              <Toast
+                message={"Error al eliminar los gifs favoritos"}
+                visible={showToast}
+                hideToast={() => {
+                  hideToast();
+                  setToggleToast(false);
+                  setErrorDeleteAllFav(false);
+                }}
+                duration={1500}
+              />
+            )}
+          {showToast && lastAction === "removeFav" && !toggleToast && (
+            <Toast
+              message={"Se eliminó gif de Favoritos"}
+              visible={showToast}
+              hideToast={hideToast}
+            />
+          )}
+        </View>
       </View>
     </>
   );
