@@ -1,17 +1,11 @@
 import * as ImagePicker from "expo-image-picker";
 import { Image, Pressable, Text, View, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCameraImage,
-  clearUser,
-} from "../../../features/authSlice/authSlice";
-import {
-  usePostProfileImageMutation,
-  useDeleteProfileImageMutation,
-} from "../../../services/permissionsApi";
+import { clearUser, setInfoUser } from "../../../features/authSlice/authSlice";
+import { usePostInfoUserMutation } from "../../../services/infoUserApi";
 import { deleteSession } from "../../../db";
 import { useToast } from "../../../hooks";
 import styles from "./ProfileScreen.style";
@@ -21,14 +15,11 @@ import { colorGreen } from "../../../constants/colors";
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-
-  const image = useSelector((state) => state.auth.imageCamera);
   const email = useSelector((state) => state.auth.user);
   const currentTheme = useSelector((state) => state.theme.currentTheme);
-  const { localId } = useSelector((state) => state.auth);
-
-  const [triggerSaveProfileImage] = usePostProfileImageMutation();
-  const [deleteImage] = useDeleteProfileImageMutation();
+  const { localId, username } = useSelector((state) => state.auth);
+  const image = useSelector((state) => state.auth.imageCamera);
+  const [triggerSaveInfoUser] = usePostInfoUserMutation();
   const { showToast, hideToast, showToastMessage } = useToast();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -107,18 +98,21 @@ const ProfileScreen = ({ navigation }) => {
       let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        aspect: [9, 16],
+        aspect: [1, 1],
         base64: true,
-        quality: 0.4,
+        quality: 0.5,
       });
       if (!result.canceled) {
         dispatch(
-          setCameraImage(`data:image/jpeg;base64,${result.assets[0].base64}`)
-        );
-        //Almacenar image en db
-        try {
-          await triggerSaveProfileImage({
+          setInfoUser({
             image: `data:image/jpeg;base64,${result.assets[0].base64}`,
+            username: username,
+          })
+        );
+        try {
+          await triggerSaveInfoUser({
+            image: `data:image/jpeg;base64,${result.assets[0].base64}`,
+            username: username,
             localId,
           });
         } catch (error) {
@@ -140,16 +134,21 @@ const ProfileScreen = ({ navigation }) => {
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        aspect: [9, 16],
+        aspect: [1, 1],
         base64: true,
-        quality: 0.4,
+        quality: 0.5,
       });
       if (!result.canceled) {
-        dispatch(setCameraImage(`${result.assets[0].uri}`));
-        //Almacenar image en db
-        try {
-          await triggerSaveProfileImage({
+        dispatch(
+          setInfoUser({
             image: `${result.assets[0].uri}`,
+            username: username,
+          })
+        );
+        try {
+          await triggerSaveInfoUser({
+            image: `${result.assets[0].uri}`,
+            username: username,
             localId,
           });
         } catch (error) {
@@ -165,9 +164,19 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleDeleteImage = async () => {
     try {
-      const result = await deleteImage(localId);
-      if (result.data === null) {
-        dispatch(setCameraImage(result.data));
+      const resultInfoUser = await triggerSaveInfoUser({
+        image: null,
+        username: username,
+        localId,
+      });
+      console.log("resultInfoUser", resultInfoUser.data);
+      if (resultInfoUser && !resultInfoUser.data.image) {
+        dispatch(
+          setInfoUser({
+            image: null,
+            username: username,
+          })
+        );
         setImageDeleteSuccess(true);
       }
     } catch (error) {
@@ -286,7 +295,10 @@ const ProfileScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.userEmail}>
-          <Text style={[styles.emailText]}>Usuario: {email}</Text>
+          <Text style={[styles.emailText]}>Email: {email}</Text>
+        </View>
+        <View style={styles.userEmail}>
+          <Text style={[styles.emailText]}>Username: {username}</Text>
         </View>
         <View style={styles.logoutContainer}>
           <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>

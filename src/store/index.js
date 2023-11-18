@@ -6,7 +6,7 @@ import favoritesSlice from "../features/favoritesSlice/favoritesSlice";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { gifsApi } from "../services/gifsApi";
 import { authApi } from "../services/authApi";
-import { permissionsApi } from "../services/permissionsApi";
+import { infoUserApi } from "../services/infoUserApi";
 import { giphyApi } from "../services/giphyApi";
 
 const store = configureStore({
@@ -17,14 +17,14 @@ const store = configureStore({
     favorites: favoritesSlice,
     [gifsApi.reducerPath]: gifsApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
-    [permissionsApi.reducerPath]: permissionsApi.reducer,
+    [infoUserApi.reducerPath]: infoUserApi.reducer,
     [giphyApi.reducerPath]: giphyApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       gifsApi.middleware,
       authApi.middleware,
-      permissionsApi.middleware,
+      infoUserApi.middleware,
       giphyApi.middleware
     ),
 });

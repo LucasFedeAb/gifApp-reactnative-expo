@@ -4,14 +4,15 @@ import { StatusBar } from "expo-status-bar";
 import styles from "./SignUpScreen.style";
 import { Ionicons } from "@expo/vector-icons";
 import { useSignUpMutation } from "../../../services/authApi";
+import { usePostInfoUserMutation } from "../../../services/infoUserApi";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../../features/authSlice/authSlice";
+import { setUser, setInfoUser } from "../../../features/authSlice/authSlice";
 import { insertSession } from "../../../db";
 import ButtonGradient from "../../../components/ButtonGradient/ButtonGradient";
 
 const SignUpScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
@@ -21,6 +22,7 @@ const SignUpScreen = ({ navigation }) => {
   const [passwordError, setPasswordError] = useState(null);
   const [error, setError] = useState(null);
   const [triggerSignup] = useSignUpMutation();
+  const [triggerSaveInfoUser] = usePostInfoUserMutation();
 
   const onSubmit = async () => {
     const isValidPassword = validatePassword(password);
@@ -37,12 +39,18 @@ const SignUpScreen = ({ navigation }) => {
       setPasswordError("Las contraseñas no coinciden. Por favor, verifica.");
       return;
     } else {
-      setPasswordError("");
+      setPasswordError(null);
     }
 
     try {
       const result = await triggerSignup({ email, password }).unwrap();
       dispatch(setUser(result));
+      dispatch(
+        setInfoUser({
+          username: name.trim(),
+          image: null,
+        })
+      );
       insertSession({
         localId: result.localId,
         email: result.email,
@@ -55,6 +63,12 @@ const SignUpScreen = ({ navigation }) => {
           setError(error.message);
           console.log("Error messgge", error.message);
         });
+
+      await triggerSaveInfoUser({
+        username: name,
+        image: null,
+        localId: result.localId,
+      });
     } catch (error) {
       let errorMessage = error.data.error.message;
       let errorShow;
@@ -87,7 +101,6 @@ const SignUpScreen = ({ navigation }) => {
     <View style={styles.mainContainer}>
       <View style={styles.containerSVG}>
         <Text style={styles.logo}>Gif App</Text>
-        {/* <SvgTop /> */}
       </View>
 
       <View style={styles.container}>
@@ -105,8 +118,8 @@ const SignUpScreen = ({ navigation }) => {
               style={styles.inputEmail}
               placeholder="Username"
               placeholderTextColor={"gray"}
-              value={username.trim()}
-              onChangeText={setUsername}
+              value={name}
+              onChangeText={setName}
             />
           </View>
         </View>

@@ -4,8 +4,8 @@ import BottomTabNavigator from "../BottomTabNavigator/BottomTabNavigator";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetCategoriesQuery } from "../../services/gifsApi";
 import { setUniqueCategories } from "../../features/gifsSlice/gifsSlice";
-import { useGetProfileImageQuery } from "../../services/permissionsApi";
-import { setCameraImage, setUser } from "../../features/authSlice/authSlice";
+import { useGetInfoUserQuery } from "../../services/infoUserApi";
+import { setUser, setInfoUser } from "../../features/authSlice/authSlice";
 import { fetchSession } from "../../db";
 import { Splash } from "../../components";
 
@@ -14,7 +14,7 @@ const MainNavigator = () => {
   const [loadingSession, setLoadingSession] = useState(true);
   const categories = useSelector((state) => state.gifs.uniqueCategories);
   const { user, localId } = useSelector((state) => state.auth);
-  const { data: dataProfile } = useGetProfileImageQuery(localId);
+  const { data: dataInfoUser } = useGetInfoUserQuery(localId);
   const { data, isLoading } = useGetCategoriesQuery();
 
   useEffect(() => {
@@ -28,10 +28,10 @@ const MainNavigator = () => {
   }, [data]);
 
   useEffect(() => {
-    if (dataProfile) {
-      dispatch(setCameraImage(dataProfile.image));
+    if (dataInfoUser) {
+      dispatch(setInfoUser(dataInfoUser));
     }
-  }, [dataProfile]);
+  }, [dataInfoUser]);
 
   useEffect(() => {
     (async () => {

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import styles from "./LoginScreen.style";
 import ButtonGradient from "../../../components/ButtonGradient/ButtonGradient";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../../../services/authApi";
 import { setUser } from "../../../features/authSlice/authSlice";
 import { insertSession } from "../../../db";

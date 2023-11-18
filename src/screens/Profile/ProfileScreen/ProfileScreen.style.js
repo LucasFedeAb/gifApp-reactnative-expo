@@ -61,12 +61,10 @@ export default styles = StyleSheet.create({
   },
   userEmail: {
     padding: 16,
-    marginVertical: 50,
+    marginVertical: "5%",
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colorGreen.primary,
     backgroundColor: "#e65f07",
-    marginHorizontal: "10%",
+    marginHorizontal: "5%",
     borderRadius: 5,
   },
   emailText: {
